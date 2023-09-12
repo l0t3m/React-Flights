@@ -12,3 +12,13 @@ body {
     font-weight: 600;
 }
 
+.table {
+    display: flex;
+}
+
+.row {
+    display: block;
+    width: 50%;
+}
+
+
