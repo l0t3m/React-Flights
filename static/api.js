@@ -55,11 +55,11 @@ function ShowFlights(props) {
         </div>
     )
 
-    if (props.country != null && props.country != undefined ) {
+    if (props.country != null && props.country != undefined && props.country.length != 0 ) {
         return (
             <div className="divTable">
                 {tableheaders()}
-                {props.records.map( (record) => record.CHLOCCT == props.country ? tableData(record) : null) }
+                {props.records.map( (record) => record.CHLOC1T == props.country ? tableData(record) : null) }
             </div>
         )
 
@@ -78,6 +78,7 @@ function ShowFlights(props) {
 
 function ShowPage(props) {
     const [records, setRecords] = React.useState([]);
+    const [countrySelected, setCountrySelected] = React.useState(null);
 
     React.useEffect(() => {
         axios.get('https://data.gov.il/api/3/action/datastore_search?resource_id=e83f763b-b7d7-479e-b172-ae981ddc6de5&limit=10').then( (response) => {
@@ -97,8 +98,8 @@ function ShowPage(props) {
             <div className="section">
                 <div className="header paddingBottom">Filter / Search:</div>
 
-                <select name="country" id="countrySelect" className="reInput">
-                    <option value="n/a"></option>
+                <select name="country" id="countrySelect" className="reInput" onChange={() => setCountrySelected(countrySelect.value)}>
+                    <option value={undefined}></option>
                     {filterCountries(records, "english").map( (country) =>
                         <option value={country}>{country}</option>
                     )}
@@ -107,9 +108,7 @@ function ShowPage(props) {
                 <input type="submit" value="Search" className="reInput reSearch"/>
             </div>
 
-
-            <ShowFlights records={records}/>
-            {/* <ShowFlights records={records} country="ITALY"/> */}
+            <ShowFlights records={records} country={countrySelected}/>
 
         </div>
     )
