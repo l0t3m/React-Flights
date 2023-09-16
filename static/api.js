@@ -1,6 +1,14 @@
 // JavaScript:
 
-function showCountries(obj, lang) {
+
+
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+// General Functions: //
+
+function filterCountries(obj, lang) {
     var countries = []
     
     if (lang.toLowerCase() == "english") {
@@ -18,9 +26,57 @@ function showCountries(obj, lang) {
 
 
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+// Components: //
 
 function ShowFlights(props) {
+    const tableheaders = () => (
+        <div className="headRow container">
+            <div className="divCell">Flight Id</div>
+            <div className="divCell">Departure</div>
+            <div className="divCell">Airplane's Airline</div>
+            <div className="divCell">Terminal</div>
+            <div className="divCell">Destination</div>
+            <div className="divCell">Status</div>
+        </div>
+    )
+
+    const tableData = (record) => (
+        <div className="divRow container">
+            <div className="divCell">{record.CHFLTN}</div>
+            <div className="divCell">{record.CHSTOL}</div>
+            <div className="divCell">{record.CHOPERD}</div>
+            <div className="divCell">{record.CHTERM}</div>
+            <div className="divCell">{record.CHLOCCT} {record.CHLOC1T} / {record.CHLOC1TH} {record.CHLOC1CH}</div>
+            <div className="divCell">{record.CHRMINE} / {record.CHRMINH}</div>
+        </div>
+    )
+
+    if (props.country != null && props.country != undefined ) {
+        return (
+            <div className="divTable">
+                {tableheaders()}
+                {props.records.map( (record) => record.CHLOCCT == props.country ? tableData(record) : null) }
+            </div>
+        )
+
+    } else {
+        return (
+            <div className="divTable">
+                {tableheaders()}
+                {props.records.map ( (record) => tableData(record))}
+            </div>
+        )
+    }
+}
+
+
+
+
+function ShowPage(props) {
     const [records, setRecords] = React.useState([]);
 
     React.useEffect(() => {
@@ -37,54 +93,30 @@ function ShowFlights(props) {
             </div>
 
 
+            {/* Filter / Search: */}
             <div className="section">
                 <div className="header paddingBottom">Filter / Search:</div>
 
-                {/* Filter / Search: */}
+                <select name="country" id="countrySelect" className="reInput">
+                    <option value="n/a"></option>
+                    {filterCountries(records, "english").map( (country) =>
+                        <option value={country}>{country}</option>
+                    )}
+                </select>
 
-                <form action="/filter/country" method="get">
-                    <select name="country" id="countrySelect" className="reInput">
-                        <option value="n/a"></option>
-                        {showCountries(records, "english").map( (country) =>
-                            <option value={country}>{country}</option>
-                        )}
-                    </select>
-
-                    <input type="submit" value="Search" className="reInput reSearch"/>
-                </form>
+                <input type="submit" value="Search" className="reInput reSearch"/>
             </div>
 
 
-
-            <div className="divTable">
-                {/* Table headers: */}
-                <div className="headRow container">
-                    <div className="divCell">Flight Id</div>
-                    <div className="divCell">Departure</div>
-                    <div className="divCell">Airplane's Airline</div>
-                    <div className="divCell">Terminal</div>
-                    <div className="divCell">Destination</div>
-                    <div className="divCell">Status</div>
-                </div>
-
-                {/* Table data: */}
-                {records.map( (record) => 
-                    <div className="divRow container">
-                        <div className="divCell"> {record.CHFLTN}</div>
-                        <div className="divCell">{record.CHSTOL}</div>
-                        <div className="divCell">{record.CHOPERD}</div>
-                        <div className="divCell">{record.CHTERM}</div>
-                        <div className="divCell">{record.CHLOCCT} {record.CHLOC1T} / {record.CHLOC1TH} {record.CHLOC1CH}</div>
-                        <div className="divCell">{record.CHRMINE} / {record.CHRMINH}</div>
-                    </div>
-                )}
-            </div>
+            <ShowFlights records={records}/>
+            {/* <ShowFlights records={records} country="ITALY"/> */}
 
         </div>
     )
 }
 
-root.render(<ShowFlights/>)
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<ShowPage/>)
 
 
 
