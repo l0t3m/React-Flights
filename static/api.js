@@ -13,7 +13,7 @@ function filterCountries(obj, lang) {
     
     if (lang.toLowerCase() == "english") {
         obj.map(record => (
-            countries.includes(record.CHLOC1T) == false ? countries.push(record.CHLOC1T) : null
+            countries.includes(record.CHLOCCT) == false ? countries.push(record.CHLOCCT) : null
         ))
     } else if (lang.toLowerCase() == "hebrew") {
         obj.map((record) => (
@@ -22,6 +22,18 @@ function filterCountries(obj, lang) {
     }
 
     return countries
+}
+
+function sortTime(str) {
+    return str.slice(str.search("T") + 1, -3);
+}
+
+function sortNames(str) {
+    return str.split(" ").map((word) => {
+        let firstLetter = word.charAt(0).toUpperCase();
+        let rest = word.slice(1).toLowerCase();
+        return firstLetter + rest + " ";
+    })
 }
 
 
@@ -36,30 +48,31 @@ function ShowFlights(props) {
     const tableheaders = () => (
         <div className="headRow container">
             <div className="divCell">Flight Id</div>
-            <div className="divCell">Departure</div>
             <div className="divCell">Airplane's Airline</div>
-            <div className="divCell">Terminal</div>
             <div className="divCell">Destination</div>
+            <div className="divCell">Departure</div>
+            <div className="divCell">Terminal</div>
             <div className="divCell">Status</div>
         </div>
     )
 
     const tableData = (record) => (
         <div className="divRow container">
-            <div className="divCell">{record.CHFLTN}</div>
-            <div className="divCell">{record.CHSTOL}</div>
-            <div className="divCell">{record.CHOPERD}</div>
-            <div className="divCell">{record.CHTERM}</div>
-            <div className="divCell">{record.CHLOCCT} {record.CHLOC1T} / {record.CHLOC1TH} {record.CHLOC1CH}</div>
-            <div className="divCell">{record.CHRMINE} / {record.CHRMINH}</div>
+            <div className="divCell">{record.CHFLTN}</div> {/* FlightID */}
+            <div className="divCell">{sortNames(record.CHOPERD)}</div> {/* Airline */}
+            <div className="divCell">{sortNames(record.CHLOCCT)} - {sortNames(record.CHLOC1T)}</div> {/* Destination */}
+            <div className="divCell">{sortTime(record.CHSTOL)}</div> {/* Departure */}
+            <div className="divCell">{record.CHTERM}</div> {/* Terminal */}
+            <div className="divCell bold">{sortNames(record.CHRMINE)}</div> {/* Status */}
         </div>
     )
 
-    if (props.country != null && props.country != undefined && props.country.length != 0 ) {
+    if (props.country != null && props.country != undefined && props.country != "default" ) {
         return (
             <div className="divTable">
                 {tableheaders()}
-                {props.records.map( (record) => record.CHLOC1T == props.country ? tableData(record) : null) }
+                {props.records.map( (record) => record.CHLOCCT == props.country ? tableData(record) : null) }
+                
             </div>
         )
 
@@ -88,24 +101,21 @@ function ShowPage(props) {
 
     return (
         <div>
+            <div className="background"></div>
             <div className="headers">
                 <div className="bigHeader">Ben Gurion Airport</div>
-                <div className="header">Departing Flights:</div>
             </div>
-
 
             {/* Filter / Search: */}
             <div className="section">
-                <div className="header paddingBottom">Filter / Search:</div>
-
-                <select name="country" id="countrySelect" className="reInput" onChange={() => setCountrySelected(countrySelect.value)}>
-                    <option value={undefined}></option>
-                    {filterCountries(records, "english").map( (country) =>
-                        <option value={country}>{country}</option>
-                    )}
-                </select>
-
-                <input type="submit" value="Search" className="reInput reSearch"/>
+                <div className="inputBorder">
+                    <select name="country" id="countrySelect" className="reInput" onChange={() => setCountrySelected(countrySelect.value)}>
+                        <option value={"default"}>All Countries</option>
+                        {filterCountries(records, "english").map( (country) =>
+                            <option value={country}>{sortNames(country)}</option>
+                        )}
+                    </select>
+                </div>
             </div>
 
             <ShowFlights records={records} country={countrySelected}/>

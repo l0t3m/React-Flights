@@ -1,6 +1,6 @@
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-size: 12pt;
+    font-family: sans-serif ;
+    font-size: 14pt;
 
     margin: 20px;
 }
@@ -21,11 +21,6 @@ body {
     width: auto;
 
     padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-
-    border-radius: 10px;
-    border: 0.1px solid black;
 }
 
 .divCell {
@@ -33,19 +28,37 @@ body {
     width: 100%;
 }
 
+.divRow {
+    border-bottom: 0.2px solid rgb(140, 190, 207);
+}
+
+.divRow:nth-child(even) {
+    background-color: rgb(235, 240, 240);
+}
+
 /* -------------------------------------------------- */
 
 .headRow > div {
-    font-weight: 600;
+    font-weight: 700;
+}
+
+.headRow {
+    background-color: #a7cacb;
 }
 
 .bigHeader {
     font-size: 28pt;
     font-weight: 700;
+    text-align: center;
+    background-color: #a7cacb;
+    
+    padding: 0.50rem;
+    margin-left: 30%;
+    margin-right: 30%;
 }
 
 .header {
-    font-size: 22pt;
+    font-size: 20pt;
     font-weight: 600;
 }
 
@@ -63,15 +76,18 @@ body {
     width: 10%;
     padding: 5px;
 
-    border-radius: 10px;
-    border: 0.1px solid black;
+    border: 0;
 }
 
-.reSearch {
-    margin-left: 10px;
+.inputBorder > select {
+    border-bottom: 0.1px solid black;
 }
 
+/* -------------------------------------------------- */
 
+.bold {
+    font-weight: 500;
+}
 
 
 
