@@ -1,15 +1,9 @@
 // JavaScript:
 
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-
-
-// General Functions: //
+// Additional Functions: //
 
 function filterCountries(obj, lang) {
-    var countries = []
+    let countries = []
     
     if (lang.toLowerCase() == "english") {
         obj.map(record => (
@@ -29,13 +23,16 @@ function sortTime(str) {
 }
 
 function sortNames(str) {
-    return str.split(" ").map((word) => {
+    return str.split(" ").map( (word) => {
         let firstLetter = word.charAt(0).toUpperCase();
         let rest = word.slice(1).toLowerCase();
         return firstLetter + rest + " ";
-    })
+    } )
 }
 
+
+
+// Components: //
 
 function AutoReload(props) {
     const [counter, setCounter] = React.useState(props.time * 60);
@@ -46,14 +43,6 @@ function AutoReload(props) {
         }, 1000)
     }, [])
 }
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-
-
-
-// Components: //
 
 function ShowFlights(props) {
     const tableheaders = () => (
@@ -99,6 +88,7 @@ function ShowFlights(props) {
 
 
 
+// Main Component: //
 
 function ShowPage(props) {
     const [records, setRecords] = React.useState([]);
