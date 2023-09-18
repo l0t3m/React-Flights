@@ -37,6 +37,17 @@ function sortNames(str) {
 }
 
 
+function AutoReload(props) {
+    const [counter, setCounter] = React.useState(props.time * 60);
+
+    React.useEffect( () => {
+        setInterval( () => {
+            setCounter((counter) => counter == 0 ? location.reload() : counter - 1);
+        }, 1000)
+    }, [])
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -93,14 +104,17 @@ function ShowPage(props) {
     const [records, setRecords] = React.useState([]);
     const [countrySelected, setCountrySelected] = React.useState(null);
 
-    React.useEffect(() => {
+    React.useEffect( () => {
         axios.get('https://data.gov.il/api/3/action/datastore_search?resource_id=e83f763b-b7d7-479e-b172-ae981ddc6de5&limit=10').then( (response) => {
             setRecords(response.data.result.records)
         })
-    })
+    } )
 
     return (
         <div>
+
+            <AutoReload time={props.reloadTime}/>
+
             <div className="background"></div>
             <div className="headers">
                 <div className="bigHeader">Ben Gurion Airport</div>
@@ -125,7 +139,7 @@ function ShowPage(props) {
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<ShowPage/>)
+root.render(<ShowPage reloadTime={15}/>)
 
 
 
