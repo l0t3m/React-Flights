@@ -30,6 +30,24 @@ function sortNames(str) {
     } )
 }
 
+function sortByNumber(flightsObj) {
+    let ids = []
+    flightsObj.map( (flight) => ids.push(flight.CHFLTN))
+
+    ids.sort(function (a,b) {
+        return a - b;
+    })
+
+    let arr = []
+    for (let i = 0; i < ids.length; i++) {
+        flightsObj.map( (flight) => (
+            flight.CHFLTN == ids[i] ? arr.push(flight) : null
+        ))
+    }
+
+    return arr
+}
+
 
 
 // Components: //
@@ -45,6 +63,12 @@ function AutoReload(props) {
 }
 
 function ShowFlights(props) {
+    const [flights, setFlights] = React.useState(props.records);
+
+    React.useEffect( () => {
+        setFlights( () => props.records)
+    })
+
     const tableheaders = () => (
         <div className="headRow container">
             <div className="divCell">Flight Id</div>
@@ -71,16 +95,16 @@ function ShowFlights(props) {
         return (
             <div className="divTable">
                 {tableheaders()}
-                {props.records.map( (record) => record.CHLOCCT == props.country ? tableData(record) : null) }
-                
+                {/* {flights.map( (flight) => flight.CHLOCCT == props.country ? tableData(flight) : null) } */}
+                {sortByNumber(flights).map( (flight) => flight.CHLOCCT == props.country ? tableData(flight) : null) }
             </div>
         )
-
     } else {
         return (
             <div className="divTable">
                 {tableheaders()}
-                {props.records.map ( (record) => tableData(record))}
+                {/* {flights.map( (flight) => tableData(flight))} */}
+                {sortByNumber(flights).map( (flight) => tableData(flight))}
             </div>
         )
     }
@@ -95,7 +119,7 @@ function ShowPage(props) {
     const [countrySelected, setCountrySelected] = React.useState(null);
 
     React.useEffect( () => {
-        axios.get('https://data.gov.il/api/3/action/datastore_search?resource_id=e83f763b-b7d7-479e-b172-ae981ddc6de5&limit=10').then( (response) => {
+        axios.get('https://data.gov.il/api/3/action/datastore_search?resource_id=e83f763b-b7d7-479e-b172-ae981ddc6de5&limit=20').then( (response) => {
             setRecords(response.data.result.records)
         })
     } )
@@ -123,16 +147,9 @@ function ShowPage(props) {
             </div>
 
             <ShowFlights records={records} country={countrySelected}/>
-
         </div>
     )
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<ShowPage reloadTime={15}/>)
-
-
-
-
-
-
+root.render(<ShowPage reloadTime={10}/>)
